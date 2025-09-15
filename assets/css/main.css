@@ -1,0 +1,482 @@
+/* ===========================
+   ШРИФТЫ
+   =========================== */
+@font-face {
+	font-family: 'ka_boxo';
+	unicode-range: U+10A0-10FF;
+	src: local('BPG Boxo'), url('../fonts/subset-BPGBoxo.woff2') format('woff2'),
+		url('../fonts/subset-BPGBoxo.woff') format('woff'),
+		url('../fonts/bpg_boxo.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'ka_no9';
+	unicode-range: U+10A0-10FF;
+	src: local('BPG No9'), url('../fonts/subset-BPGNo9.woff2') format('woff2'),
+		url('../fonts/subset-BPGNo9.woff') format('woff'),
+		url('../fonts/bpg_no9.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'ka_mrgvlovani';
+	unicode-range: U+10A0-10FF;
+	src: local('BPG Mrgvlovani'),
+		url('../fonts/subset-BPGMrgvlovani.woff2') format('woff2'),
+		url('../fonts/subset-BPGMrgvlovani.woff') format('woff'),
+		url('../fonts/bpg_mrgvlovani.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'ka_mrgvlovani_caps';
+	unicode-range: U+10A0-10FF;
+	src: local('BPG Mrgvlovani Caps 2010'),
+		url('../fonts/subset-BPGMrgvlovaniCaps2010.woff2') format('woff2'),
+		url('../fonts/subset-BPGMrgvlovaniCaps2010.woff') format('woff'),
+		url('../fonts/bpg_mrgvlovani_caps.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'eng-gotic';
+	src: url('../fonts/BarlowSemiCondensed-SemiBold.ttf') format('truetype');
+	font-display: swap;
+}
+
+/* ===========================
+   ПЕРЕМЕННЫЕ
+   =========================== */
+:root {
+	--colorFirst: rgba(0, 0, 0, 0.7);
+	--colorSecond: #023f88;
+	--colorThird: rgba(204, 221, 230, 0.6);
+	--colorFourth: rgba(204, 221, 230, 0.4);
+	--colorFifth: #ccdde6;
+	--colorSixth: #a2d3ef;
+	--colorSeventh: rgba(204, 221, 230, 0.3);
+	--colorEight: rgba(2, 63, 136, 0.5);
+
+	--fontBoxo: 'ka_boxo';
+	--fontMrglovani: 'ka_mrgvlovani';
+	--fontMrglovaniCaps: 'ka_mrgvlovani_caps';
+
+	--colorActive: red;
+	--colorActiveBg: linear-gradient(to left, yellow, transparent);
+
+	/* переменные меню (используются в menu.css, оставляем в главном root) */
+	--menu-rail-width: 4px;
+	--menu-rail-hit: 12px;
+}
+
+/* ===========================
+   БАЗА / РЕСЕТ
+   =========================== */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	min-height: 100vh;
+	font-family: var(--fontMrglovani), sans-serif;
+	overflow-y: auto;
+	scroll-behavior: smooth;
+}
+
+h1 {
+	font-weight: normal;
+}
+h2 {
+	font-family: var(--fontMrglovani), sans-serif;
+	color: var(--colorSecond);
+	font-size: clamp(0.6rem, 1.5vw + 0.4rem, 1.4rem);
+	font-weight: bold;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* ===========================
+   ДЕКОРАТИВНЫЕ КЛАССЫ ТЕКСТА
+   =========================== */
+.boxoFont {
+	font-family: 'ka_boxo';
+	font-size: clamp(1rem, 1.5vw + 0.5rem, 2rem);
+	color: #263868;
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+.goticFont {
+	font-family: 'eng-gotic';
+	font-size: clamp(0.5rem, 1vw + 0.3rem, 1.2rem);
+	color: #263868;
+}
+
+/* ===========================
+   ОБЩИЙ КОНТЕЙНЕР
+   =========================== */
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header,
+.slider,
+footer {
+	flex-shrink: 0;
+}
+
+/* ===========================
+   ШАПКА
+   =========================== */
+.top-bar {
+	display: flex;
+	justify-content: space-between;
+	width: 90%;
+	margin: 10px auto 20px;
+}
+
+.left-side {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.right-side {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	text-align: right;
+	justify-content: space-between;
+}
+
+.logo {
+	height: 60px;
+	width: 60px;
+}
+#logo {
+	height: 100%;
+	width: 100%;
+}
+
+.language-switcher img {
+	width: 24px;
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+/* ===========================
+   СЛАЙДЕР
+   =========================== */
+.slider {
+	width: 90%;
+	margin: 20px auto;
+	border-radius: 10px;
+	overflow: hidden;
+}
+.slider img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* ===========================
+   ОСНОВНОЙ КОНТЕНТ
+   =========================== */
+.main-content {
+	display: flex;
+	align-items: stretch;
+	padding: 30px 5% 90px;
+	flex: 1;
+	gap: 5%;
+}
+
+/* WHY GEORGIAN */
+.why-block {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0; /* важно для корректного ужимания в flex */
+}
+
+.why-block h2 {
+	margin-bottom: 50px;
+	text-align: center;
+	font-family: 'ka_no9';
+	font-weight: normal;
+}
+
+.why-block .text {
+	flex: 1;
+	overflow: hidden;
+	max-height: 200px;
+	transition: max-height 0.4s ease;
+	text-align: justify;
+	font-size: clamp(0.6rem, 0.8vw + 0.2rem, 0.8rem);
+	padding-right: 40px;
+}
+
+.why-block button {
+	align-self: flex-end;
+	border: none;
+	padding: 18px 14px;
+	cursor: pointer;
+	background-color: #fff;
+	color: var(--colorSecond);
+	font-family: var(--fontMrglovani), sans-serif;
+	font-size: clamp(0.6rem, 0.8vw + 0.2rem, 0.8rem);
+}
+
+.why-block #toggleText span {
+	font-size: 0.5rem;
+	margin-left: 7px;
+	display: inline-block;
+	transition: transform 0.3s ease;
+}
+.why-block #toggleText.rotate span {
+	transform: rotate(180deg);
+}
+
+/* ===========================
+   ФУТЕР
+   =========================== */
+footer {
+	color: #000;
+}
+
+.footer-wrapper {
+	padding: 0 5% 20px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	font-size: clamp(0.4rem, 0.7vw + 0.1rem, 0.6rem);
+}
+
+.footer-left {
+	flex: 1 1 35%;
+	font-size: clamp(0.4rem, 0.6vw + 0.1rem, 0.5rem);
+	line-height: 1.6;
+	align-self: end;
+	order: 1;
+}
+.footer-left span {
+	opacity: 0;
+}
+
+.footer-middle {
+	flex: 1 1 30%;
+	order: 2;
+}
+.footer-links {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.footer-links li {
+	margin-bottom: 6px;
+}
+.footer-links a {
+	color: var(--colorSecond);
+	text-decoration: none;
+	transition: color 0.3s;
+}
+.footer-links a:hover {
+	color: var(--colorFirst);
+}
+
+.footer-right {
+	flex: 1 1 35%;
+	order: 3;
+}
+
+.contact-grid {
+	display: grid;
+	grid-template-columns: 24px auto;
+	grid-template-rows: auto auto auto auto;
+	row-gap: 10px;
+	justify-content: end;
+	align-items: start;
+}
+.contact-span {
+	grid-column: 1 / span 2;
+	text-align: right;
+	line-height: 1.4;
+}
+.icon {
+	width: 24px;
+	height: 24px;
+}
+
+.contact-link {
+	display: block;
+	color: var(--colorSecond);
+	text-decoration: none;
+	transition: color 0.3s;
+	text-align: right;
+}
+.contact-link:hover {
+	color: var(--colorFirst);
+}
+
+/* ===========================
+   МОДАЛКИ
+   =========================== */
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+.modal-content {
+	background-color: #fff;
+	margin: 5% auto;
+	padding: 2rem;
+	border-radius: 8px;
+	max-width: 60vw;
+	width: 90%;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+	position: relative;
+	font-family: sans-serif;
+	line-height: 1.6;
+	overflow: auto;
+}
+.modal-content .close {
+	position: absolute;
+	top: 0.8rem;
+	right: 1rem;
+	font-size: 2rem;
+	font-weight: bold;
+	color: #888;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+.modal-content .close:hover {
+	color: #000;
+}
+
+.program-modal-text {
+	margin-top: 1rem;
+	font-size: clamp(0.8rem, 1vw + 0.2rem, 1rem);
+	color: #333;
+	font-family: var(--fontMrglovani), sans-serif;
+}
+.program-modal-text p {
+	margin-bottom: 1rem;
+}
+
+/* ===========================
+   ВИДЕО
+   =========================== */
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%;
+	height: 0;
+	overflow: hidden;
+	border-radius: 12px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.video-container iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* ===========================
+   ФОРМА ОБРАТНОЙ СВЯЗИ
+   =========================== */
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.contact-form input,
+.contact-form textarea {
+	padding: 8px;
+	font-size: 16px;
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
+.contact-form textarea {
+	min-height: 300px;
+}
+.contact-form button {
+	align-self: flex-start;
+	padding: 8px 16px;
+	background-color: #0057a3;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+}
+.contact-form button:hover {
+	background-color: #004080;
+}
+
+/* ===========================
+   МОБИЛЬНЫЕ ПРАВКИ
+   =========================== */
+@media (max-width: 768px) {
+	.icon {
+		width: 16px;
+		height: 16px;
+	}
+
+	.main-content {
+		flex-direction: column;
+		padding: 0 5%;
+	}
+
+	/* правки шапки на мобиле */
+	.left-side {
+		flex-direction: column;
+	}
+	.logo {
+		width: 30px;
+		height: 30px;
+	}
+
+	.why-block h2,
+	.slider {
+		margin: 0 auto 20px;
+		padding: 0;
+	}
+	.why-block .text {
+		padding-right: 0;
+	}
+
+	.modal-content {
+		max-width: 90vw;
+	}
+
+	.footer-left {
+		flex-basis: 100%;
+		order: 3;
+		padding-top: 30px;
+		font-size: clamp(0.2rem, 0.5vw + 0.1rem, 0.5rem);
+	}
+	.footer-middle {
+		order: 1;
+	}
+	.footer-right {
+		flex-basis: 30%;
+		max-width: 150px;
+		order: 2;
+	}
+}

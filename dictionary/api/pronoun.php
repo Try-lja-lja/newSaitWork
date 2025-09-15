@@ -1,0 +1,54 @@
+<?php
+declare(strict_types=1);
+require_once __DIR__ . '/../common.php';
+require_once __DIR__ . '/../connect.php';
+
+header('Content-Type: application/json; charset=utf-8');
+
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+if ($id <= 0) {
+    echo json_encode(['success' => false, 'error' => 'bad id']);
+    exit;
+}
+
+try {
+    $sql = "SELECT p.*, w.word_view 
+            FROM pronoun AS p
+            JOIN words AS w ON w.id = p.word_ID
+            WHERE p.word_ID = :id
+            LIMIT 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+        echo json_encode(['success' => true, 'exists' => false], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    $characteristic = $row['characteristic'] ?? '';
+
+    $cases = [
+        // nominative из слова; мн.ч. — нет поля → пусто
+        'nominative'    => ['s' => $row['word_view']           ?? '', 'p' => ''],
+        'ergative'      => ['s' => $row['ergative_s']          ?? '', 'p' => $row['ergative_p']       ?? ''],
+        'dative'        => ['s' => $row['dative_s']            ?? '', 'p' => $row['dative_p']         ?? ''],
+        'genetive'      => ['s' => $row['genetive_s']          ?? '', 'p' => $row['genetive_p']       ?? ''],
+        'instrumental'  => ['s' => $row['instrumental_s']      ?? '', 'p' => $row['instrumental_p']   ?? ''],
+        'transformative'=> ['s' => $row['transformative_s']    ?? '', 'p' => $row['transformative_p'] ?? ''],
+        'vocative'      => ['s' => $row['vocative_s']          ?? '', 'p' => $row['vocative_p']       ?? ''],
+    ];
+
+    echo json_encode([
+        'success' => true,
+        'exists'  => true,
+        'characteristic' => $characteristic,
+        'cases'   => $cases,
+        'labels'  => [
+            'cases'       => $LABELS['cases'],
+            'cases_order' => $LABELS['cases_order'],
+        ],
+    ], JSON_UNESCAPED_UNICODE);
+} catch (Throwable $e) {
+    echo json_encode(['success' => false, 'error' => 'DB error']);
+}

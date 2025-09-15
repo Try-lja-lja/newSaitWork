@@ -1,0 +1,1 @@
+<?php return ['mainPageSlider1.webp', 'mainPageSlider2.webp', 'mainPageSlider3.webp', 'mainPageSlider4.webp', 'mainPageSlider5.webp', 'mainPageSlider6.webp', 'mainPageSlider7.webp'];
