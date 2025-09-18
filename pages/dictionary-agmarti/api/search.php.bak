@@ -12,7 +12,7 @@ require_once __DIR__ . '/../common.php';
 require_once __DIR__ . '/../connect.php';
 
 /** Быстрая подстановка параметров в SQL для echo (ТОЛЬКО ДЛЯ ОТЛАДКИ) */
-function expand_sql_for_debug(string $sql, array $params) {
+function expand_sql_for_debug(string $sql, array $params): string {
     // Нормализуем ключи (:name или name)
     $norm = [];
     foreach ($params as $k => $v) {
@@ -33,7 +33,7 @@ function expand_sql_for_debug(string $sql, array $params) {
 }
 
 /** echo-помощник в debug-режиме */
-function dbg(string $msg, bool $debug) {
+function dbg(string $msg, bool $debug): void {
     if ($debug) {
         echo $msg, "\n";
     }

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../connect.php';
 
 $DEBUG = isset($_GET['debug']) && $_GET['debug'] == '1';
 
-function jerr(string $msg, int $code = 500) {
+function jerr(string $msg, int $code = 500): void {
     http_response_code($code);
     echo json_encode(['success' => false, 'error' => $msg], JSON_UNESCAPED_UNICODE);
     exit;
@@ -64,7 +64,7 @@ try {
     $stAnt = $pdo->prepare($antSql);
     $stIdm = $pdo->prepare($idiomSql);
 
-    $topicName = function (?int $tid) use ($TOPICS) {
+    $topicName = function (?int $tid) use ($TOPICS): ?array {
         if (!$tid || $tid === 0) return null;
         $key = (string)$tid;
         return ['id' => $tid, 'label' => $TOPICS[$key] ?? (string)$tid];
