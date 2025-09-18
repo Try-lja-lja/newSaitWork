@@ -9,7 +9,7 @@ require_once __DIR__ . '/connect.php';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>სასწავლო ლექსიკონი</title>
+    <title>სასწავლო ლექსიკონი</title>X
     <link rel="stylesheet" href="../assets/css/dictionary.css">
 </head>
 <body>

@@ -1,0 +1,36 @@
+<?php
+declare(strict_types=1);
+header('Content-Type: application/json; charset=utf-8');
+
+require_once __DIR__ . '/../connect.php';
+require_once __DIR__ . '/../common.php';
+
+$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+$word = isset($_POST['word']) ? trim((string)$_POST['word']) : '';
+$word_view = isset($_POST['word_view']) ? trim((string)$_POST['word_view']) : '';
+$part_of_speech_id = isset($_POST['part_of_speech_id']) ? (int)$_POST['part_of_speech_id'] : null;
+
+if ($id <= 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid id']);
+    exit;
+}
+
+// prepared statement (безопаснее)
+$stmt = mysqli_prepare($CONNECT, "UPDATE `words` SET `word` = ?, `word_view` = ?, `part_of_speech_id` = ? WHERE `id` = ?");
+if ($stmt === false) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => mysqli_error($CONNECT)], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+mysqli_stmt_bind_param($stmt, 'ssii', $word, $word_view, $part_of_speech_id, $id);
+$ok = mysqli_stmt_execute($stmt);
+
+if (!$ok) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => mysqli_stmt_error($stmt)], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+echo json_encode(['success' => true, 'affected' => mysqli_stmt_affected_rows($stmt)]);

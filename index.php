@@ -29,19 +29,8 @@ $slides = include "data/slides.php";
   <div class="main-content">
 
     <!-- Левое меню -->
-  <div class="menu-block">
-    <!-- NEW: рейл-кнопка -->
-    <button class="menu-rail" id="menuRail" aria-label="Toggle side menu" type="button"></button>
+<?php $startLevel = 1; $depth = 2; include __DIR__ . '/includes/menu.php'; ?>
 
-    <!-- NEW: внутренняя обёртка для плавного сдвига контента -->
-    <div class="menu-inner">
-      <?php
-        require_once 'includes/buildMenu.php';
-        require_once 'includes/menuData.php';
-        echo buildMenu($menuItems, 1, 2);
-      ?>
-    </div>
-  </div>
 
 
     <!-- WHY GEORGIAN -->

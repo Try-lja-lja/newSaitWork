@@ -121,6 +121,9 @@ img {
 	font-size: clamp(0.5rem, 1vw + 0.3rem, 1.2rem);
 	color: #263868;
 }
+.font-alt {
+	font-family: 'ka_mrgvlovani_caps', sans-serif;
+}
 
 /* ===========================
    ОБЩИЙ КОНТЕЙНЕР
