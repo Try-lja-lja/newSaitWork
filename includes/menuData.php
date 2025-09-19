@@ -9,6 +9,7 @@ $query = "
         title_geo,
         title_en,
         url_slug,
+        is_published,
         type,
         target_page,
         new_tab,

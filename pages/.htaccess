@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# если нет такого файла/папки — отправляем в coming-soon
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ coming-soon/index.php?slug=$1 [QSA,L]

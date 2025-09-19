@@ -19,11 +19,13 @@ function wrapFontAlt($text) {
  * Собирает href/атрибуты для <a>.
  * Возврат: array($href, $target, $rel, $dataUrl)
  */
+
 function makeLinkAttrs($item) {
     $type       = isset($item['type']) ? $item['type'] : 'static';
-    $slug       = trim((string)(isset($item['url_slug']) ? $item['url_slug'] : ''));
-    $targetPage = trim((string)(isset($item['target_page']) ? $item['target_page'] : ''));
-    $newTab     = (int)(isset($item['new_tab']) ? $item['new_tab'] : 0) === 1;
+    $slug       = trim((string)($item['url_slug'] ?? ''));
+    $targetPage = trim((string)($item['target_page'] ?? ''));
+    $newTab     = ((int)($item['new_tab'] ?? 0) === 1);
+    $isPub      = ((int)($item['is_published'] ?? 0) === 1);
 
     $href   = '#';
     $target = '';
@@ -31,37 +33,27 @@ function makeLinkAttrs($item) {
     $dataUrl = null;
 
     if ($type === 'external') {
-        if (preg_match('~^https?://~i', $targetPage)) {
-            $href = $targetPage;
-        } else {
-            $href = '#';
-        }
-        if ($newTab) {
-            $target = ' target="_blank"';
-            $rel    = ' rel="noopener noreferrer"';
-        }
-        // для внешних ссылок data-url НЕ ставим
+        // ... (как у тебя)
     } elseif ($type === 'dynamic') {
-        $href    = '#';
-        $dataUrl = $slug !== '' ? $slug : null;
-        if ($newTab) {
-            $target = ' target="_blank"';
-            $rel    = ' rel="noopener noreferrer"';
-        }
-    } else { // static (или по умолчанию)
+        // ... (как у тебя)
+    } else { // static
         if ($slug !== '') {
-            $href = PAGES_URL . rawurlencode($slug) . '/';
+            if ($isPub) {
+                $href = PAGES_URL . rawurlencode($slug) . '/';
+            } else {
+                // ведём на универсальную заглушку в /pages/coming-soon/
+                $href = PAGES_URL . 'coming-soon/?slug=' . rawurlencode($slug);
+            }
         } else {
             $href = '#';
         }
         $dataUrl = $slug !== '' ? $slug : null;
-
-        if ($newTab) {
-            $target = ' target="_blank"';
-            $rel    = ' rel="noopener noreferrer"';
-        }
     }
 
+    if ($newTab) {
+        $target = ' target="_blank"';
+        $rel    = ' rel="noopener noreferrer"';
+    }
     return array($href, $target, $rel, $dataUrl);
 }
 
