@@ -24,8 +24,10 @@ body {
 }
 .brand {
 	display: flex;
+	width: 100%;
 	align-items: center;
 	gap: 10px;
+	justify-content: space-between;
 }
 .logo-wrap img {
 	height: 48px;
@@ -546,4 +548,52 @@ input[type='search']:focus {
 	transition: none !important;
 	transform: none !important;
 	width: auto !important; /* шириной рулит только grid */
+}
+/* ===== Dictionary page: стабилизация макета ===== */
+
+/* 1) Жёстко возвращаем GRID на десктопе, перекрывая global menu.css */
+@media (min-width: 769px) {
+	.main-content {
+		display: grid !important;
+		grid-template-columns: var(--menu-w, 30%) 1fr;
+		will-change: grid-template-columns;
+		transition: grid-template-columns 0.24s ease-out;
+	}
+}
+
+/* 2) Управляет шириной только grid — меню само ширину не анимирует */
+.main-content .menu-block,
+.main-content .menu-block.menu-block--shifted {
+	width: auto !important;
+	transition: none !important;
+	box-sizing: border-box;
+	align-self: start;
+	contain: layout paint; /* изоляция перерисовок, убирает микро-скуки */
+}
+
+/* 3) На странице словаря ВЫКЛЮЧАЕМ конкурирующие трансформации меню */
+.main-content .menu-block .menu-inner {
+	transform: none !important;
+	transition: none !important;
+	padding-left: var(--menu-rail-gap); /* оставляем как в глобале */
+}
+
+/* 4) Правая колонка: уходим от % + min-width → один clamp и без повторной фазы */
+#results {
+	/* левая часть правой колонки: от 240px до 360px, обычно ~25vw */
+	flex: 0 0 clamp(240px, 25vw, 360px);
+	min-width: 0; /* критично: разрешаем сжатие без второго пересчёта */
+	height: 100%;
+	overflow: auto;
+}
+
+/* правая часть правой колонки — тоже без «упора» по минимальной ширине */
+#details-panel {
+	min-width: 0;
+}
+
+/* 5) Гарантия отсутствия горизонтального мигания скролла на контенте */
+.content-block {
+	overflow: hidden;
+	transition: none;
 }
