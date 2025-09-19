@@ -491,3 +491,42 @@ input[type='search']:focus {
 .idiom-example {
 	opacity: 0.9;
 }
+/* === Anti-jank overrides only for the dictionary page === */
+
+/* 1) Клипаем горизонтальный оверфлоу, чтобы не мигал скролл всей страницы */
+.main-content {
+	overflow-x: clip; /* в новых браузерах */
+	overflow-y: visible;
+	isolation: isolate; /* изолируем от соседних перерисовок */
+}
+
+/* Фолбек для старых движков без overflow-x: clip */
+@supports not (overflow: clip) {
+	.main-content {
+		overflow: hidden;
+	}
+}
+
+/* 2) На словарной странице НЕ двигаем .menu-inner трансформацией —
+      прячется за счет узкой колонки grid + overflow: hidden у .menu-block */
+.main-content .menu-block .menu-inner {
+	transform: none !important;
+	transition: none !important;
+	pointer-events: auto; /* клики по рейлу остаются рабочими */
+}
+
+/* 3) Ширину самого .menu-block тут не анимируем — ею рулит grid */
+.main-content .menu-block,
+.main-content .menu-block.menu-block--shifted {
+	width: auto !important;
+	transition: none !important;
+}
+
+/* 4) (опционально) Хочешь оставить «широкую зону клика» при свёрнутом меню?
+      Тогда раскомментируй следующую строку: она резервирует ~рейл+хит-бокс.
+      По умолчанию отдаём максимум ширины контенту. */
+/*
+.main-content:has(.menu-block.menu-block--shifted) {
+  --menu-w: calc(var(--menu-rail-width) + var(--menu-rail-hit));
+}
+*/

@@ -1299,5 +1299,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	measureHeights();
 	window.addEventListener('resize', measureHeights);
 });
+// высота правой колонки = высота окна минус шапка; обновляем при ресайзе
+(function () {
+	function setContentHeight() {
+		const header = document.querySelector('.site-header');
+		const top = header ? header.getBoundingClientRect().bottom : 0;
+		const h = Math.max(320, window.innerHeight - top - 20);
+		document.documentElement.style.setProperty('--content-h', h + 'px');
+	}
+	window.addEventListener('resize', setContentHeight);
+	window.addEventListener('DOMContentLoaded', setContentHeight);
+	setTimeout(setContentHeight, 0);
+})();
 
 document.addEventListener('DOMContentLoaded', initListeners);
