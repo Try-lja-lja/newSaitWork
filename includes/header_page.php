@@ -1,3 +1,8 @@
+<head>
+<?php if (!empty($metaNoindex)): ?>
+  <meta name="robots" content="noindex, nofollow">
+<?php endif; ?>
+</head>
 <?php
 // includes/header_page.php
 // Общая шапка для внутренних страниц (без формы поиска).

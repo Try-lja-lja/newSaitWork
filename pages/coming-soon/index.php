@@ -1,54 +1,75 @@
 <?php
 // pages/coming-soon/index.php
-require_once __DIR__ . '/../../includes/connect.php';
-require_once __DIR__ . '/../../includes/language.php'; // где определяется $lang (ka|en), если нужно
 
+// 1) Не индексировать
+if (!headers_sent()) {
+    header('X-Robots-Tag: noindex, nofollow', true);
+}
+$metaNoindex = true;
+
+// 2) Текущий язык (если у тебя глобально он в сессии/константе — подстрой)
+$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ka';
+
+// 3) Получаем slug из query
 $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 $slug = preg_replace('~[^a-z0-9\-_\/]~i', '', $slug);
 
-$pageTitle = ($lang ?? 'ka') === 'en' ? 'Coming soon' : 'გვერდი მუშავდება';
-$menuRow = null;
+// 4) Пытаемся мягко подключить БД (без фатала, если файл не найден)
+$root = dirname(__DIR__, 2); // .../newSaitWork
+$pdo = null;
+$tryFiles = [
+    $root . '/includes/connect.php',
+    $root . '/connect.php',
+    $root . '/includes/db.php',
+];
+foreach ($tryFiles as $f) {
+    if (is_file($f)) {
+        include_once $f;
+        break;
+    }
+}
+// теперь если в инклюженом файле был создан $pdo (PDO) — используем. Если нет — просто без БД.
 
-if ($slug !== '') {
+// 5) Заголовок страницы
+$pageTitle = ($lang === 'en') ? 'Coming soon' : 'გვერდი მუშავდება';
+
+if ($slug !== '' && $pdo instanceof PDO) {
     $stmt = $pdo->prepare("
         SELECT title_geo, title_en
         FROM geofl_work.menuMain
         WHERE url_slug = :slug
         LIMIT 1
     ");
-    $stmt->execute([':slug' => $slug]);
-    $menuRow = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($menuRow) {
-        $pageTitle = (($lang ?? 'ka') === 'en')
-            ? ($menuRow['title_en'] ?: 'Coming soon')
-            : ($menuRow['title_geo'] ?: 'გვერდი მუშავდება');
+    if ($stmt->execute([':slug' => $slug])) {
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pageTitle = ($lang === 'en')
+                ? (!empty($row['title_en']) ? $row['title_en'] : 'Coming soon')
+                : (!empty($row['title_geo']) ? $row['title_geo'] : 'გვერდი მუშავდება');
+        }
     }
 }
 
-// сигнал для <head>, чтобы отдать noindex
-$metaNoindex = true;
+// 6) Подключаем общий хедер/футер (если есть)
+$header = $root . '/includes/header_page.php';
+$footer = $root . '/includes/footer.php'; // если у тебя иначе — поправь путь
 
-// если у тебя есть общий header/footer — подключи их.
-// иначе оставь как голую секцию.
-@include __DIR__ . '/../../includes/header.php';
+if (is_file($header)) include $header;
 ?>
 <section class="coming-soon">
   <div class="cs-wrap">
     <h1><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></h1>
     <p class="cs-lead">
-      <?= (($lang ?? 'ka') === 'en')
+      <?= ($lang === 'en')
         ? 'This page is under construction and will be available soon.'
         : 'ეს გვერდი ჯერ მზად არ არის. გთხოვთ, შემოხვიდეთ მოგვიანებით.' ?>
     </p>
-
     <?php if ($slug !== ''): ?>
       <p class="cs-eta">
-        <?= (($lang ?? 'ka') === 'en') ? 'Section:' : 'განყოფილება:' ?>
+        <?= ($lang === 'en') ? 'Section:' : 'განყოფილება:' ?>
         <strong><?= htmlspecialchars($slug, ENT_QUOTES, 'UTF-8') ?></strong>
       </p>
     <?php endif; ?>
-
-    <a class="cs-btn" href="/"><?= (($lang ?? 'ka') === 'en') ? 'Go to homepage' : 'მთავარი გვერდი' ?></a>
+    <a class="cs-btn" href="/"> <?= ($lang === 'en') ? 'Go to homepage' : 'მთავარი გვერდი' ?> </a>
   </div>
 </section>
 
@@ -59,4 +80,4 @@ $metaNoindex = true;
 .coming-soon .cs-lead{opacity:.8;margin-bottom:1.25rem;line-height:1.6}
 .cs-btn{display:inline-block;padding:.75rem 1.25rem;border-radius:.75rem;border:1px solid #ddd;text-decoration:none}
 </style>
-<?php @include __DIR__ . '/../../includes/footer.php';
+<?php if (is_file($footer)) include $footer; ?>

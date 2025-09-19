@@ -20,28 +20,51 @@ function wrapFontAlt($text) {
  * Возврат: array($href, $target, $rel, $dataUrl)
  */
 
+/**
+ * Собирает href/атрибуты для <a>.
+ * Возврат: array($href, $target, $rel, $dataUrl)
+ */
 function makeLinkAttrs($item) {
     $type       = isset($item['type']) ? $item['type'] : 'static';
     $slug       = trim((string)($item['url_slug'] ?? ''));
-    $targetPage = trim((string)($item['target_page'] ?? ''));
+    $targetPage = trim((string)($item['target_page'] ?? '')); // для external/dynamic
     $newTab     = ((int)($item['new_tab'] ?? 0) === 1);
     $isPub      = ((int)($item['is_published'] ?? 0) === 1);
 
-    $href   = '#';
-    $target = '';
-    $rel    = '';
+    $href    = '#';
+    $target  = '';
+    $rel     = '';
     $dataUrl = null;
 
     if ($type === 'external') {
-        // ... (как у тебя)
+        // 1) Внешняя ссылка (на другой сайт / полный URL)
+        //   - если протокол не указан, просто отдаем как есть (относительный URL)
+        if ($targetPage !== '') {
+            $href = $targetPage;
+            // внешним ссылкам безопаснее добавить rel
+            $rel = ' rel="noopener noreferrer"';
+        } else {
+            $href = '#';
+        }
+
     } elseif ($type === 'dynamic') {
-        // ... (как у тебя)
-    } else { // static
+        // 2) Динамическая внутренняя страница (роутинг проекта)
+        //    Подстрой под свою схему (если используешь другой параметр или path)
+        if ($targetPage !== '') {
+            // пример: /?page=<targetPage>
+            // если у тебя другой роутинг — замени строку ниже
+            $href = '/?page=' . rawurlencode($targetPage);
+        } else {
+            $href = '#';
+        }
+
+    } else {
+        // 3) Обычная "статическая" страница в /pages/<slug>/
         if ($slug !== '') {
             if ($isPub) {
                 $href = PAGES_URL . rawurlencode($slug) . '/';
             } else {
-                // ведём на универсальную заглушку в /pages/coming-soon/
+                // страница не опубликована → ведём на заглушку
                 $href = PAGES_URL . 'coming-soon/?slug=' . rawurlencode($slug);
             }
         } else {
@@ -52,8 +75,12 @@ function makeLinkAttrs($item) {
 
     if ($newTab) {
         $target = ' target="_blank"';
-        $rel    = ' rel="noopener noreferrer"';
+        // если rel пустой, добавим его; если уже есть, не дублируем
+        if (strpos($rel, 'noopener') === false) {
+            $rel = trim($rel . ' rel="noopener noreferrer"');
+        }
     }
+
     return array($href, $target, $rel, $dataUrl);
 }
 
