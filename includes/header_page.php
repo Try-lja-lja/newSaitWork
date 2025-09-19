@@ -2,6 +2,22 @@
   <meta charset="UTF-8">
   <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php
+if (!isset($pageTitle)) {
+    $pageTitle = '';
+}
+?><!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <?php if (!empty($metaNoindex)): ?>
+    <meta name="robots" content="noindex, nofollow">
+  <?php endif; ?>
+</head>
+<body>
 
   <?php if (!empty($metaNoindex)): ?>
     <meta name="robots" content="noindex, nofollow">
