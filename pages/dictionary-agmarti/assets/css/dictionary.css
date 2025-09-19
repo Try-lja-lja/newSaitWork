@@ -597,3 +597,19 @@ input[type='search']:focus {
 	overflow: hidden;
 	transition: none;
 }
+/* === Статилизация высоты левого столбца на словарной странице === */
+
+/* 1) Меню теперь той же фиксированной высоты, что и правая колонка */
+.main-content .menu-block {
+	height: calc(var(--content-h, 70vh) - 50px);
+	overflow: auto; /* скроллим содержимое, не растягиваем колонку */
+	scrollbar-gutter: stable; /* не даём вертикальному скроллу «мигать» */
+	align-self: stretch !important; /* растягиваем по высоте строки грида */
+	contain: layout paint; /* изоляция перерисовок, без влияния на соседей */
+}
+
+/* 2) А чтобы внутренности меню точно не меняли наружную геометрию */
+.main-content .menu-block .menu-inner {
+	min-height: 100%;
+	box-sizing: border-box;
+}
