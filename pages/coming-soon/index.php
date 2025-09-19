@@ -1,60 +1,43 @@
 <?php
-// pages/coming-soon/index.php
-
-// 1) Не индексировать
-if (!headers_sent()) {
-    header('X-Robots-Tag: noindex, nofollow', true);
-}
+// noindex
+if (!headers_sent()) header('X-Robots-Tag: noindex, nofollow', true);
 $metaNoindex = true;
 
-// 2) Текущий язык (если у тебя глобально он в сессии/константе — подстрой)
+session_start();
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ka';
 
-// 3) Получаем slug из query
-$slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
-$slug = preg_replace('~[^a-z0-9\-_\/]~i', '', $slug);
+$slug = isset($_GET['slug']) ? preg_replace('~[^a-z0-9\-_\/]~i', '', $_GET['slug']) : '';
 
-// 4) Пытаемся мягко подключить БД (без фатала, если файл не найден)
 $root = dirname(__DIR__, 2); // .../newSaitWork
-$pdo = null;
-$tryFiles = [
-    $root . '/includes/connect.php',
-    $root . '/connect.php',
-    $root . '/includes/db.php',
-];
-foreach ($tryFiles as $f) {
-    if (is_file($f)) {
-        include_once $f;
-        break;
-    }
-}
-// теперь если в инклюженом файле был создан $pdo (PDO) — используем. Если нет — просто без БД.
 
-// 5) Заголовок страницы
+// мягко подключаем конфиг/базу (у тебя mysqli + fetchData())
+@require_once $root . '/includes/config.php';
+@require_once $root . '/includes/db.php';
+
 $pageTitle = ($lang === 'en') ? 'Coming soon' : 'გვერდი მუშავდება';
 
-if ($slug !== '' && $pdo instanceof PDO) {
-    $stmt = $pdo->prepare("
+// если доступна fetchData(), пробуем подтянуть заголовки из БД
+if ($slug !== '' && function_exists('fetchData')) {
+    $rows = fetchData("
         SELECT title_geo, title_en
         FROM geofl_work.menuMain
-        WHERE url_slug = :slug
+        WHERE url_slug = ?
         LIMIT 1
-    ");
-    if ($stmt->execute([':slug' => $slug])) {
-        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pageTitle = ($lang === 'en')
-                ? (!empty($row['title_en']) ? $row['title_en'] : 'Coming soon')
-                : (!empty($row['title_geo']) ? $row['title_geo'] : 'გვერდი მუშავდება');
-        }
+    ", array($slug));
+    if (!empty($rows[0])) {
+        $row = $rows[0];
+        $pageTitle = ($lang === 'en')
+            ? (!empty($row['title_en']) ? $row['title_en'] : 'Coming soon')
+            : (!empty($row['title_geo']) ? $row['title_geo'] : 'გვერდი მუშავდება');
     }
 }
 
-// 6) Подключаем общий хедер/футер (если есть)
+// подключаем общий header/footer проекта (если есть)
 $header = $root . '/includes/header_page.php';
-$footer = $root . '/includes/footer.php'; // если у тебя иначе — поправь путь
-
+$footer = $root . '/includes/footer.php';
 if (is_file($header)) include $header;
 ?>
+
 <section class="coming-soon">
   <div class="cs-wrap">
     <h1><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></h1>
