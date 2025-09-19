@@ -144,13 +144,34 @@ input[type='search']:focus {
 
 /* === ДВЕ КОЛОНКИ === */
 .main-content {
-	display: flex;
-	align-items: flex-start; /* меню не тянется по высоте */
+	display: grid;
+	/* левая колонка = var(--menu-w), правая = 1fr */
+	grid-template-columns: var(--menu-w, 30%) 1fr;
+	align-items: start; /* меню не тянется по высоте */
 	gap: 2px;
 	max-width: 90%;
 	margin: 20px auto;
 	box-sizing: border-box;
 	padding: 0;
+
+	/* плавная анимация только колонок сетки → без «рывков» у правой панели */
+	transition: grid-template-columns 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* когда меню «свернуто», ширина левой колонки = ширина рейла */
+.main-content:has(.menu-block.menu-block--shifted) {
+	--menu-w: var(--menu-rail-width);
+}
+
+/* в словаре ширину меню управляет grid, не сам .menu-block */
+.main-content .menu-block {
+	width: auto !important;
+	transition: none !important; /* ширина меню не анимируется, только колонка */
+}
+
+/* и в «свернутом» состоянии тоже — ширина контролируется сеткой */
+.main-content .menu-block.menu-block--shifted {
+	width: auto !important;
 }
 
 /* меню — естественная высота контента */
@@ -160,13 +181,15 @@ input[type='search']:focus {
 
 /* правая колонка */
 .content-block {
-	flex: 1 1 auto;
 	display: flex;
 	gap: 16px;
-	height: var(--content-h, 70vh); /* задаём из JS: окно − шапка */
-	overflow: hidden; /* скролл у вложенных #results/#details-panel */
+	height: var(--content-h, 70vh); /* задаётся из JS: окно − шапка */
+	overflow: hidden; /* скролл у #results / #details-panel */
 	min-width: 0;
 	flex-direction: row;
+
+	/* правая колонка не должна сама анимировать ширину */
+	transition: none;
 }
 
 /* левая часть правой колонки — список результатов */
@@ -245,7 +268,8 @@ input[type='search']:focus {
 /* ДОБАВИТЬ в pages/dictionary-agmarti/assets/css/dictionary.css */
 #results,
 #details-panel {
-	scrollbar-gutter: stable both-edges; /* резервируем место под скроллбар */
+	scrollbar-gutter: stable both-edges;
+	overflow-anchor: none; /* запрет «пришвартовки» скролла — убирает микропрыжки */
 }
 
 /* центрированное сообщение */
