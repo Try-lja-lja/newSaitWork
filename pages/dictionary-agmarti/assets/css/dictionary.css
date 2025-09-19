@@ -184,18 +184,17 @@ input[type='search']:focus {
 	display: flex;
 	gap: 16px;
 	height: var(--content-h, 70vh); /* задаётся из JS: окно − шапка */
-	overflow: hidden; /* скролл у #results / #details-panel */
+	overflow: hidden;
 	min-width: 0;
 	flex-direction: row;
-
-	/* правая колонка не должна сама анимировать ширину */
 	transition: none;
+	contain: layout paint;
 }
 
 /* левая часть правой колонки — список результатов */
 #results {
 	flex: 0 0 25%;
-	min-width: 260px;
+	min-width: 0;
 	height: 100%;
 	overflow: auto;
 }
@@ -530,3 +529,21 @@ input[type='search']:focus {
   --menu-w: calc(var(--menu-rail-width) + var(--menu-rail-hit));
 }
 */
+
+/* Сверху уже есть .main-content { display: grid; ... } — но его перебивает menu.css.
+   На словарной странице на десктопе жёстко фиксируем grid. */
+@media (min-width: 769px) {
+	.main-content {
+		display: grid !important;
+		grid-template-columns: var(--menu-w, 30%) 1fr;
+		will-change: grid-template-columns;
+		transition: grid-template-columns 0.24s ease-out; /* немного короче и без резких ускорений */
+	}
+}
+/* Любые трансформации внутренностей меню на странице словаря — в ноль */
+.main-content .menu-block,
+.main-content .menu-block .menu-inner {
+	transition: none !important;
+	transform: none !important;
+	width: auto !important; /* шириной рулит только grid */
+}
