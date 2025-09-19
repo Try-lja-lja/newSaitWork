@@ -27,19 +27,20 @@ body.offcanvas-open {
 	position: relative; /* для рейла */
 	overflow: hidden; /* прячем уезжающий контент */
 	background: #fff;
-	transition: width 0.35s ease; /* плавная анимация ширины */
+	transition: width 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); /* плавней, без «рывка» */
+	will-change: width;
 }
 
 /* ВНУТРЕННИЙ КОНТЕЙНЕР: его сдвигаем за рейл */
 .menu-block .menu-inner {
-	position: relative; /* было: relative — оставляем */
-	/* УДАЛЕНО: inset: auto; width:auto; height:auto; (они нам больше не нужны) */
-	height: 100%; /* ИЗМЕНЕНО: было auto — теперь тянется на высоту .menu-block */
-	display: flex; /* ДОБАВЛЕНО: становимся flex-контейнером */
-	flex-direction: column; /* ДОБАВЛЕНО: вертикальная колонка */
+	position: relative;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 	z-index: 1;
 	will-change: transform;
 	transition: transform 0.35s ease;
+	padding-left: var(--menu-rail-gap);
 }
 
 .menu-block > .menu-inner > ul.menu-level-1 {
@@ -89,6 +90,13 @@ body.offcanvas-open {
 	padding: 6px 10px;
 	border-radius: 4px;
 	transition: background-color 0.3s;
+}
+
+.menu-block .menu-level-1 li > a,
+.menu-block .menu-level-2 li > a {
+	white-space: nowrap; /* не переносим строки */
+	overflow: hidden; /* лишнее прячем */
+	text-overflow: ellipsis; /* многоточие */
 }
 
 /* Уровень 1 */
@@ -148,14 +156,15 @@ body.offcanvas-open {
 	position: absolute;
 	left: 0;
 	top: 0;
-	width: var(--menu-rail-width); /* напр. 4px из :root */
+	width: var(--menu-rail-width);
 	height: 100%;
-	background: var(--colorSecond);
+	background: #999;
 	border: 0;
 	padding: 0;
 	margin: 0;
 	cursor: pointer;
-	z-index: 3; /* над контентом меню */
+	z-index: 3;
+	border-radius: 0 8px 8px 0;
 }
 .menu-rail:hover {
 	filter: brightness(0.95);

@@ -1,10 +1,7 @@
 <?php
-
-
 // В обычном режиме — JSON. В debug-режиме — text/plain + подробный echo.
-$debug = isset($_GET['debug']) && $_GET['debug'] !== '0';
+$debug = (isset($_GET['debug']) && $_GET['debug'] !== '0');
 header('Content-Type: ' . ($debug ? 'text/plain; charset=utf-8' : 'application/json; charset=utf-8'));
-header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 
@@ -12,11 +9,11 @@ require_once __DIR__ . '/../common.php';
 require_once __DIR__ . '/../connect.php';
 
 /** Быстрая подстановка параметров в SQL для echo (ТОЛЬКО ДЛЯ ОТЛАДКИ) */
-function expand_sql_for_debug(string $sql, array $params) {
+function expand_sql_for_debug($sql, $params) {
     // Нормализуем ключи (:name или name)
-    $norm = [];
+    $norm = array();
     foreach ($params as $k => $v) {
-        $k2 = $k[0] === ':' ? $k : (':' . $k);
+        $k2 = ($k !== '' && $k[0] === ':') ? $k : (':' . $k);
         $norm[$k2] = $v;
     }
     // Подставим значения
@@ -33,18 +30,18 @@ function expand_sql_for_debug(string $sql, array $params) {
 }
 
 /** echo-помощник в debug-режиме */
-function dbg(string $msg, bool $debug) {
+function dbg($msg, $debug) {
     if ($debug) {
         echo $msg, "\n";
     }
 }
 
-// ===== Получаем фильтры (POST — как ждёт main.js) =====
-$tema           = FormChars($_POST['tema']           ?? '43');
-$level          = FormChars($_POST['level']          ?? 'all');
-$part_of_speech = FormChars($_POST['part_of_speech'] ?? '13');
-$word           = FormChars($_POST['word']           ?? '');
-$letter         = FormChars($_POST['letter']         ?? '');
+// ===== Получаем фильтры (POST — как ждёт фронт) =====
+$tema           = isset($_POST['tema'])           ? FormChars($_POST['tema'])           : '43';
+$level          = isset($_POST['level'])          ? FormChars($_POST['level'])          : 'all';
+$part_of_speech = isset($_POST['part_of_speech']) ? FormChars($_POST['part_of_speech']) : '13';
+$word           = isset($_POST['word'])           ? FormChars($_POST['word'])           : '';
+$letter         = isset($_POST['letter'])         ? FormChars($_POST['letter'])         : '';
 
 // Нормализуем "пустую букву"
 $letter_is_empty = ($letter === '' || $letter === 'ყველა ასო');
@@ -58,7 +55,7 @@ dbg("word={$word}", $debug);
 dbg("letter=" . ($letter_is_empty ? '(empty)' : $letter), $debug);
 
 // Ответ
-$rows = [];
+$rows = array();
 $started_at = microtime(true);
 
 try {
@@ -108,8 +105,8 @@ try {
             JOIN `use`  AS u ON u.word_id = w.id
         ";
 
-        $conditions = [];
-        $params     = [];
+        $conditions = array();
+        $params     = array();
 
         // Тема — три одинаковых плейсхолдера для надёжности в PDO
         if ($tema !== '43') {
@@ -127,10 +124,10 @@ try {
 
         // Часть речи
         if ($part_of_speech !== '13') {
-            $conditions[] = "w.part_of_speech_id = :pos";   // <-- было w.part_of_speech
+            // NB: колонка именно part_of_speech_id (не part_of_speech)
+            $conditions[] = "w.part_of_speech_id = :pos";
             $params[':pos'] = (int)$part_of_speech;
         }
-
 
         // Поиск по слову
         if ($word !== '') {
@@ -144,7 +141,7 @@ try {
             $params[':letter'] = $letter . '%';
         }
 
-        if ($conditions) {
+        if (!empty($conditions)) {
             $sql .= ' WHERE ' . implode(' AND ', $conditions);
         }
 
@@ -153,9 +150,9 @@ try {
         // Debug: SQL и параметры
         dbg("SQL (compact): " . preg_replace('/\s+/', ' ', trim($sql)), $debug);
         if (!empty($params)) {
-            $pairs = [];
+            $pairs = array();
             foreach ($params as $k => $v) {
-                $pairs[] = "{$k}=" . (is_scalar($v) ? $v : json_encode($v, JSON_UNESCAPED_UNICODE));
+                $pairs[] = $k . '=' . (is_scalar($v) ? $v : json_encode($v));
             }
             dbg('PARAMS: ' . implode(', ', $pairs), $debug);
             dbg('SQL expanded: ' . expand_sql_for_debug($sql, $params), $debug);
@@ -177,33 +174,32 @@ try {
     $total_time = microtime(true) - $started_at;
     dbg(sprintf("TOTAL time: %.4f s, rows: %d", $total_time, count($rows)), $debug);
 
-    // Небольшой предпросмотр данных в debug-режиме
     if ($debug) {
         $preview = array_slice($rows, 0, 10);
         dbg("-- preview (first 10 rows) --", $debug);
-        foreach ($preview as $i => $r) {
+        for ($i=0; $i<count($preview); $i++) {
+            $r = $preview[$i];
             dbg(sprintf("%d) id=%s word_view=%s level=%s",
                 $i+1,
-                $r['id'] ?? '?',
-                $r['word_view'] ?? '?',
-                $r['level'] ?? '?'
+                isset($r['id']) ? $r['id'] : '?',
+                isset($r['word_view']) ? $r['word_view'] : '?',
+                isset($r['level']) ? $r['level'] : '?'
             ), $debug);
         }
         dbg("-- end preview --", $debug);
         echo "\n--- JSON ---\n";
-        echo json_encode(['rows' => $rows], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        echo json_encode(array('rows' => $rows));
         exit;
     }
 
-    // Обычный ответ для фронтенда
-    echo json_encode(['rows' => $rows], JSON_UNESCAPED_UNICODE);
+    echo json_encode(array('rows' => $rows));
 
-} catch (Throwable $e) {
+} catch (Exception $e) { // PHP5: ловим Exception, не Throwable
     if ($debug) {
         echo "ERROR: " . $e->getMessage() . "\n";
         echo "TRACE:\n" . $e->getTraceAsString() . "\n";
         echo "\n--- JSON ---\n";
     }
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+    echo json_encode(array('success' => false, 'error' => $e->getMessage()));
 }

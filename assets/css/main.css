@@ -70,8 +70,9 @@
 	--colorActiveBg: linear-gradient(to left, yellow, transparent);
 
 	/* переменные меню (используются в menu.css, оставляем в главном root) */
-	--menu-rail-width: 4px;
-	--menu-rail-hit: 12px;
+	--menu-rail-width: 8px;
+	--menu-rail-hit: 24px;
+	--menu-rail-gap: 12px;
 }
 
 /* ===========================
@@ -180,6 +181,44 @@ footer {
 }
 
 /* ===========================
+   ШАПКА (ЕДИНАЯ ДЛЯ ВНУТРЕННИХ СТРАНИЦ)
+   =========================== */
+.site-header {
+	padding: 12px 0;
+	border-bottom: 1px solid #ddd;
+}
+.header-inner {
+	width: 90%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.logo {
+	height: 60px;
+	width: 60px;
+}
+#logo,
+#site-logo {
+	height: 100%;
+	width: 100%;
+}
+.title {
+	font: inherit;
+	font-size: clamp(0.6rem, 1vw + 0.5rem, 1.2rem);
+	font-weight: normal;
+	white-space: nowrap;
+	color: #263868;
+}
+
+/* ===========================
    СЛАЙДЕР
    =========================== */
 .slider {
@@ -205,7 +244,15 @@ footer {
 	gap: 5%;
 }
 
-/* WHY GEORGIAN */
+/* правая универсальная колонка */
+.content-block {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+/* WHY GEORGIAN (исторический блок на главной) */
 .why-block {
 	flex: 1;
 	display: flex;
@@ -420,7 +467,7 @@ footer {
 	min-height: 300px;
 }
 .contact-form button {
-	align-self: flex-start;
+	align_self: flex-start;
 	padding: 8px 16px;
 	background-color: #0057a3;
 	color: #fff;

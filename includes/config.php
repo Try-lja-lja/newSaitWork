@@ -6,7 +6,7 @@
  */
 
 // БАЗОВЫЕ URL
-define('BASE_URL', 'https://geofl.ge/newSaitWork/'); // с хвостовым /
+define('BASE_URL', '/newSaitWork/'); // с хвостовым /
 define('ASSETS_URL', BASE_URL . 'assets/');
 define('PAGES_URL',  BASE_URL . 'pages/');
 

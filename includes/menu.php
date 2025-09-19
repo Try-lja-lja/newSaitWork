@@ -1,7 +1,6 @@
 <?php
 // includes/menu.php — универсальная «обёртка» меню (PHP 5 совместимо)
 
-// Требуется: includes/config.php, includes/menuData.php, includes/buildMenu.php
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/menuData.php';
 require_once __DIR__ . '/buildMenu.php';

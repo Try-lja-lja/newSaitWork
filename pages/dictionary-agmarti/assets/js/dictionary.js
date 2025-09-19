@@ -1282,4 +1282,22 @@ function initListeners() {
 	doSearch();
 }
 
+function measureHeights() {
+	const header = document.querySelector('.site-header');
+	const content = document.querySelector('.content-block');
+	if (!content || !header) return;
+
+	const vp = window.innerHeight || document.documentElement.clientHeight;
+	const hHeader = header.getBoundingClientRect().height;
+	const h = Math.max(0, vp - hHeader - 50);
+
+	// выставляем высоту правой колонки
+	content.style.setProperty('--content-h', `${h}px`);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	measureHeights();
+	window.addEventListener('resize', measureHeights);
+});
+
 document.addEventListener('DOMContentLoaded', initListeners);
