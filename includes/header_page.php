@@ -1,8 +1,13 @@
 <head>
-<?php if (!empty($metaNoindex)): ?>
-  <meta name="robots" content="noindex, nofollow">
-<?php endif; ?>
+  <meta charset="UTF-8">
+  <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <?php if (!empty($metaNoindex)): ?>
+    <meta name="robots" content="noindex, nofollow">
+  <?php endif; ?>
 </head>
+
 <?php
 // includes/header_page.php
 // Общая шапка для внутренних страниц (без формы поиска).

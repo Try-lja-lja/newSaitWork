@@ -3,7 +3,10 @@
 if (!headers_sent()) header('X-Robots-Tag: noindex, nofollow', true);
 $metaNoindex = true;
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ka';
 
 $slug = isset($_GET['slug']) ? preg_replace('~[^a-z0-9\-_\/]~i', '', $_GET['slug']) : '';
