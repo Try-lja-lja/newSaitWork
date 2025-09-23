@@ -267,7 +267,7 @@ function renderResults(data) {
 			const id = r.id;
 			const wordView = escapeHtml(r.word_view || '');
 			const level = escapeHtml(r.level || 'WL');
-			const audioHref = 'resource/audio/' + wordView + '.mp3';
+			const audioHref = '../../assets/audioWords/' + wordView + '.mp3';
 
 			buf += `
         <tr data-id="${id}">
@@ -278,7 +278,7 @@ function renderResults(data) {
                     class="audio-btn"
                     data-src="${audioHref}"
                     aria-label="აუდიო მოსმენა">
-              <img src="resource/img/headphonesBlue.svg" class="audio-icon" alt="">
+              <img src="../../assets/img/headphonesBlue.svg" class="audio-icon" alt="">
             </button>
           </td>
         </tr>`;

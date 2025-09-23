@@ -1,7 +1,7 @@
 <?php
 // includes/header_page.php
 
-// Стартуем сессию (если ещё не стартована), чтобы прочитать язык.
+// Стартуем сессию для доступа к языку (если используешь сессию)
 if (session_status() === PHP_SESSION_NONE) {
     @session_start();
 }
@@ -26,7 +26,7 @@ $htmlLang = ($lang === 'en') ? 'en' : 'ka';
     <meta name="robots" content="noindex, nofollow">
   <?php endif; ?>
 
-  <!-- Подключения стилей/иконок размещай здесь при необходимости -->
+  <!-- Подключи стили/иконки тут при необходимости -->
   <!-- <link rel="stylesheet" href="/assets/css/main.css"> -->
 </head>
 <body>

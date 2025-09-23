@@ -146,6 +146,7 @@ input[type='search']:focus {
 
 /* === ДВЕ КОЛОНКИ === */
 .main-content {
+	--menu-w: 20%;
 	display: grid;
 	/* левая колонка = var(--menu-w), правая = 1fr */
 	grid-template-columns: var(--menu-w, 30%) 1fr;
@@ -257,6 +258,7 @@ input[type='search']:focus {
 	width: 24px;
 	height: 24px;
 	border: none;
+	cursor: pointer;
 }
 
 /* правая часть правой колонки — детали */

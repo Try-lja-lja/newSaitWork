@@ -28,7 +28,7 @@ require_once __DIR__ . '/connect.php';
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
-        <div class="logo-wrap">
+        <div class="logo">
           <img src="<?php echo ASSETS_URL; ?>img/logo.svg" alt="logo" id="site-logo" />
         </div>
         <h1 class="title">სასწავლო ლექსიკონი <span>აღმართი</span></h1>

@@ -46,10 +46,10 @@ if ($slug !== '' && function_exists('fetchData')) {
 
 // 6) общий header/footer проекта (если есть)
 $header = $root . '/includes/header_page.php';
-$footerCandidates = [
-    $root . '/includes/footer.php',
-    $root . '/includes/footer_page.php',
-];
+// $footerCandidates = [
+//     $root . '/includes/footer.php',
+//     $root . '/includes/footer_page.php',
+// ];
 if (is_file($header)) {
     include $header;
 }
@@ -70,7 +70,7 @@ if (is_file($header)) {
       </p>
     <?php endif; ?>
 
-    <a class="cs-btn" href="/"> <?= ($lang === 'en') ? 'Go to homepage' : 'მთავარი გვერდი' ?> </a>
+    <a class="cs-btn" href="http://test.geofl.ge/newSaitWork/index.php"> <?= ($lang === 'en') ? 'Go to homepage' : 'მთავარი გვერდი' ?> </a>
   </div>
 </section>
 
@@ -82,6 +82,6 @@ if (is_file($header)) {
 .cs-btn{display:inline-block;padding:.75rem 1.25rem;border-radius:.75rem;border:1px solid #ddd;text-decoration:none}
 </style>
 <?php
-foreach ($footerCandidates as $f) {
-    if (is_file($f)) { include $f; break; }
-}
+// foreach ($footerCandidates as $f) {
+//     if (is_file($f)) { include $f; break; }
+// }

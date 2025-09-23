@@ -9,7 +9,11 @@ require_once __DIR__ . '/buildMenu.php';
 if (!isset($startLevel)) { $startLevel = 1; }
 if (!isset($depth))      { $depth      = 2; }
 
-echo '<nav class="menu-block" aria-label="Main">' . PHP_EOL;
+// Определяем: мы на странице словаря или нет
+$currentPath   = $_SERVER['REQUEST_URI'] ?? '';
+$isDictionary  = (strpos($currentPath, '/dictionary-agmarti') !== false);
+
+echo '<nav class="menu-block' . ($isDictionary ? ' menu-block--shifted' : '') . '" aria-label="Main">' . PHP_EOL;
 echo '  <button class="menu-rail" id="menuRail" aria-label="Toggle side menu" type="button"></button>' . PHP_EOL;
 echo '  <div class="menu-inner">' . PHP_EOL;
 echo        buildMenu($menuItems, (int)$startLevel, (int)$depth);
