@@ -175,6 +175,7 @@ input[type='search']:focus {
 /* и в «свернутом» состоянии тоже — ширина контролируется сеткой */
 .main-content .menu-block.menu-block--shifted {
 	width: auto !important;
+	overflow: hidden !important;
 }
 
 /* меню — естественная высота контента */
