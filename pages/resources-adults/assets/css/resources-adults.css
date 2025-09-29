@@ -1,0 +1,99 @@
+/* pages/resources-adults/assets/css/resources-adults.css */
+
+/* Контейнер страницы букв */
+.letters-app {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	gap: 1rem;
+}
+
+/* Сетка миниатюр: 3 ряда × 11 колонок (на широких экранах) */
+.letters-grid {
+	display: grid;
+	grid-template-columns: repeat(11, 1fr);
+	gap: 10px;
+}
+
+/* Кнопки-миниатюры */
+.letter-thumb {
+	appearance: none;
+	border: none;
+	padding: 0;
+	background: transparent;
+	cursor: pointer;
+	display: block;
+}
+
+.letter-thumb img {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1/1; /* квадратные миниатюры */
+	object-fit: contain;
+	transition: transform 0.6s ease;
+}
+
+/* Ховер-поворот на 360° */
+.letter-thumb:hover img {
+	transform: rotate(360deg);
+}
+
+/* Главная сцена (большая картинка снизу по центру) */
+.letter-stage {
+	min-height: 30vh;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 12px;
+}
+
+.letter-stage-img {
+	max-width: 80%;
+	height: auto;
+	display: block;
+}
+
+/* Кнопка микрофона в правом верхнем углу большой картинки */
+.mic-btn {
+	border: 0;
+	padding: 6px;
+	background: rgba(255, 255, 255, 0.75);
+	cursor: pointer;
+	line-height: 0;
+	border-radius: 8px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+	margin: 20px 0;
+}
+
+.mic-btn img {
+	display: block;
+	width: 28px;
+	height: 28px;
+}
+
+/* Быстрый "перекрас" GIF: белый фон, чёрные линии */
+.letter-gif--invert {
+	filter: invert(1);
+}
+
+/* Адаптив: уменьшаем число колонок на узких экранах */
+@media (max-width: 1200px) {
+	.letters-grid {
+		grid-template-columns: repeat(8, 1fr);
+	}
+}
+@media (max-width: 900px) {
+	.letters-grid {
+		grid-template-columns: repeat(6, 1fr);
+	}
+}
+
+/* Доступность: уважать prefers-reduced-motion (не крутить миниатюры) */
+@media (prefers-reduced-motion: reduce) {
+	.letter-thumb img {
+		transition: none !important;
+		transform: none !important;
+	}
+	.letter-thumb:hover img {
+		transform: none !important;
+	}
+}

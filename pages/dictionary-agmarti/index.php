@@ -31,7 +31,7 @@ require_once __DIR__ . '/connect.php';
         <div class="logo">
           <img src="<?php echo ASSETS_URL; ?>img/logo.svg" alt="logo" id="site-logo" />
         </div>
-        <h1 class="title">სასწავლო ლექსიკონი <span>აღმართი</span></h1>
+        <h1 class="title">ლექსიკონი <span>აღმართი</span></h1>
       </div>
 
       <!-- ПОИСК (в шапке) -->
@@ -73,8 +73,8 @@ require_once __DIR__ . '/connect.php';
 
     <!-- ЛЕВОЕ МЕНЮ (ВАЖНО: внутри .main-content) -->
     <?php
-      $startLevel = 1;
       $depth      = 2;
+      $parentId   = null; // корневой уровень
       include __DIR__ . '/../../includes/menu.php';
     ?>
 
@@ -95,7 +95,7 @@ require_once __DIR__ . '/connect.php';
         // единственный рендер offcanvas-меню
         require_once __DIR__ . '/../../includes/menuData.php';
         require_once __DIR__ . '/../../includes/buildMenu.php';
-        echo buildMenu($menuItems, 1, 2);
+        echo buildMenu($menuItems, 2, null);
       ?>
     </nav>
   </div>

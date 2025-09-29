@@ -8,7 +8,7 @@
     <!-- Стили меню (desktop + off‑canvas) -->
     <link rel="stylesheet" href="assets/css/menu.css">
 </head>
-<body>
+<body class="is-home">
 <header>
   <div class="top-bar">
     <div class="left-side">

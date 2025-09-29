@@ -107,6 +107,27 @@ img {
 	height: auto;
 }
 
+/* оформление хлебных крошек */
+.breadcrumbs,
+[data-breadcrumbs] {
+	font-size: 0.75rem;
+	margin: 8px 5% 16px;
+	color: #333;
+}
+.breadcrumbs .crumb,
+[data-breadcrumbs] .crumb {
+	text-decoration: none;
+}
+.breadcrumbs .crumb.current,
+[data-breadcrumbs] .crumb.current {
+	font-weight: 600;
+}
+.breadcrumbs .crumb-sep,
+[data-breadcrumbs] .crumb-sep {
+	color: #888;
+	margin: 0 6px;
+}
+
 /* ===========================
    ДЕКОРАТИВНЫЕ КЛАССЫ ТЕКСТА
    =========================== */

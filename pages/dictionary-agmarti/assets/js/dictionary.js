@@ -1,7 +1,6 @@
 // (ES module) dictionaryTest/resource/js/main.js
 const DEBOUNCE_MS = 300;
 let debounceTimer = null;
-let sharedAudio = null; // один Audio на всё приложение
 
 // helpers
 const $ = (sel) => document.querySelector(sel);

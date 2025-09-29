@@ -1,34 +1,23 @@
 <?php
-// buildMenu.php — рендер многоуровневого меню (совместимо с PHP 5.x)
-
+// includes/buildMenu.php
 if (!defined('PAGES_URL')) {
     require_once __DIR__ . '/config.php';
 }
 
-/**
- * Оборачивает [[...]] в <span class="font-alt">...</span>.
- */
-function wrapFontAlt($text) {
+function wrapFontAlt(string $text): string
+{
     return preg_replace_callback('/\[\[(.+?)\]\]/u', function ($m) {
         $inner = htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8');
-        return '<span class="font-alt">'.$inner.'</span>';
+        return '<span class="font-alt">' . $inner . '</span>';
     }, $text);
 }
 
-/**
- * Собирает href/атрибуты для <a>.
- * Возврат: array($href, $target, $rel, $dataUrl)
- */
-
-/**
- * Собирает href/атрибуты для <a>.
- * Возврат: array($href, $target, $rel, $dataUrl)
- */
-function makeLinkAttrs($item) {
-    $type       = isset($item['type']) ? $item['type'] : 'static';
-    $slug       = trim((string)($item['url_slug'] ?? ''));
-    $targetPage = trim((string)($item['target_page'] ?? '')); // для external/dynamic
-    $newTab     = ((int)($item['new_tab'] ?? 0) === 1);
+function makeLinkAttrs(array $item): array
+{
+    $type       = isset($item['type']) ? (string)$item['type'] : 'static';
+    $slug       = trim((string)($item['url_slug']     ?? ''));
+    $targetPage = trim((string)($item['target_page']  ?? ''));
+    $newTab     = ((int)($item['new_tab']      ?? 0) === 1);
     $isPub      = ((int)($item['is_published'] ?? 0) === 1);
 
     $href    = '#';
@@ -37,137 +26,110 @@ function makeLinkAttrs($item) {
     $dataUrl = null;
 
     if ($type === 'external') {
-        // 1) Внешняя ссылка (на другой сайт / полный URL)
-        //   - если протокол не указан, просто отдаем как есть (относительный URL)
         if ($targetPage !== '') {
             $href = $targetPage;
-            // внешним ссылкам безопаснее добавить rel
-            $rel = ' rel="noopener noreferrer"';
-        } else {
-            $href = '#';
+            $rel  = ' rel="noopener noreferrer"';
         }
-
     } elseif ($type === 'dynamic') {
-        // 2) Динамическая внутренняя страница (роутинг проекта)
-        //    Подстрой под свою схему (если используешь другой параметр или path)
         if ($targetPage !== '') {
-            // пример: /?page=<targetPage>
-            // если у тебя другой роутинг — замени строку ниже
             $href = '/?page=' . rawurlencode($targetPage);
-        } else {
-            $href = '#';
         }
-
-    } else {
-        // 3) Обычная "статическая" страница в /pages/<slug>/
+    } else { // static
         if ($slug !== '') {
             if ($isPub) {
-                $href = PAGES_URL . rawurlencode($slug) . '/';
+                $href = rtrim(PAGES_URL, '/') . '/' . rawurlencode($slug) . '/';
             } else {
-                // страница не опубликована → ведём на заглушку
-                $href = PAGES_URL . 'coming-soon/?slug=' . rawurlencode($slug);
+                $href = rtrim(PAGES_URL, '/') . '/coming-soon/?slug=' . rawurlencode($slug);
             }
-        } else {
-            $href = '#';
         }
-        $dataUrl = $slug !== '' ? $slug : null;
+        $dataUrl = ($slug !== '') ? $slug : null;
     }
 
     if ($newTab) {
         $target = ' target="_blank"';
-        // если rel пустой, добавим его; если уже есть, не дублируем
         if (strpos($rel, 'noopener') === false) {
             $rel = trim($rel . ' rel="noopener noreferrer"');
+            if ($rel !== '' && $rel[0] !== ' ') {
+                $rel = ' ' . $rel;
+            }
         }
     }
 
     return array($href, $target, $rel, $dataUrl);
 }
 
-/**
- * Есть ли у пункта дети.
- */
-function itemHasChildren($items, $parentId) {
+function itemHasChildren(array $items, $parentId): bool
+{
+    $pid = (string)($parentId ?? '');
     foreach ($items as $it) {
-        if ((int)$it['is_visible'] === 1 && $it['parent_id'] === $parentId) {
+        if ((int)($it['is_visible'] ?? 0) !== 1) continue;
+        if ((string)($it['parent_id'] ?? '') === $pid) {
             return true;
         }
     }
     return false;
 }
 
-/**
- * Основной рендер.
- */
-function buildMenu($items, $startLevel = 1, $depth = 2, $parentId = null, $currentLevel = 1) {
-    if ($currentLevel > $startLevel + $depth - 1) {
-        return '';
-    }
+function renderLevelByParent(array $items, int $depth, $parentId, int $currentLevel, string $titleField): string
+{
+    if ($depth < 1) return '';
 
-    // язык
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ka';
-    $titleField = ($lang === 'en') ? 'title_en' : 'title_geo';
-
-    // элементы текущего уровня
+    $pid = (string)($parentId ?? '');
     $levelItems = array();
     foreach ($items as $item) {
-        if ((int)$item['is_visible'] !== 1) continue;
-        if ($item['parent_id'] === $parentId) {
+        if ((int)($item['is_visible'] ?? 0) !== 1) continue;
+        if ((string)($item['parent_id'] ?? '') === $pid) {
             $levelItems[] = $item;
         }
     }
+    if (empty($levelItems)) return '';
 
-    if (empty($levelItems)) {
-        return '';
-    }
-
-    // сортировка по order_index (без оператора <=>)
     usort($levelItems, function ($a, $b) {
-        $ai = (int)$a['order_index'];
-        $bi = (int)$b['order_index'];
+        $ai = (int)($a['order_index'] ?? 0);
+        $bi = (int)($b['order_index'] ?? 0);
         if ($ai === $bi) return 0;
         return ($ai < $bi) ? -1 : 1;
     });
 
-    $html = '';
-
-    // если мы ниже стартового уровня — не выводим ul/li здесь, а уходим глубже
-    if ($currentLevel < $startLevel) {
-        foreach ($levelItems as $item) {
-            $html .= buildMenu($items, $startLevel, $depth, $item['id'], $currentLevel + 1);
-        }
-        return $html;
-    }
-
-    // рендер нужного уровня
-    $html .= '<ul class="menu-level-' . (int)$currentLevel . '">' . PHP_EOL;
+    $html = '<ul class="menu-level-' . (int)$currentLevel . '">' . PHP_EOL;
 
     foreach ($levelItems as $item) {
-        $hasChildren = itemHasChildren($items, $item['id']);
-
+        $hasChildren = itemHasChildren($items, $item['id'] ?? null);
         $classes = array('menu-item');
         if ($hasChildren) $classes[] = 'has-children';
 
-        list($href, $target, $rel, $dataUrl) = makeLinkAttrs($item);
+        $li = '  <li class="' . implode(' ', $classes) . '" data-id="' . (int)($item['id'] ?? 0) . '">' . PHP_EOL;
 
-        // заголовок + подсветка [[...]]
-        $rawTitle = isset($item[$titleField]) ? (string)$item[$titleField] : '';
-        $safeTitle = htmlspecialchars($rawTitle, ENT_QUOTES, 'UTF-8');
+        list($href, $targetAttr, $relAttr, $dataUrl) = makeLinkAttrs($item);
+
+        $langTitle = isset($item[$titleField]) ? (string)$item[$titleField] : '';
+        $safeTitle = htmlspecialchars($langTitle, ENT_QUOTES, 'UTF-8');
         $titleHtml = wrapFontAlt($safeTitle);
 
-        $html .= '  <li class="' . implode(' ', $classes) . '" data-id="' . (int)$item['id'] . '" data-level="' . (int)$currentLevel . '">' . PHP_EOL;
-        $html .= '    <a href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"'
-              . ($dataUrl ? ' data-url="' . htmlspecialchars($dataUrl, ENT_QUOTES, 'UTF-8') . '"' : '')
-              . $target . $rel . '>' . $titleHtml . '</a>' . PHP_EOL;
-
-        if ($hasChildren) {
-            $html .= buildMenu($items, $startLevel, $depth, $item['id'], $currentLevel + 1);
+        $aAttrs  = ' href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"';
+        $aAttrs .= $targetAttr;
+        $aAttrs .= $relAttr;
+        if ($dataUrl !== null) {
+            $aAttrs .= ' data-url="' . htmlspecialchars($dataUrl, ENT_QUOTES, 'UTF-8') . '"';
         }
 
-        $html .= '  </li>' . PHP_EOL;
+        $li .= '    <a' . $aAttrs . '>' . $titleHtml . '</a>' . PHP_EOL;
+
+        if ($hasChildren) {
+            $li .= renderLevelByParent($items, $depth - 1, $item['id'] ?? null, $currentLevel + 1, $titleField);
+        }
+
+        $li .= '  </li>' . PHP_EOL;
+        $html .= $li;
     }
 
     $html .= '</ul>' . PHP_EOL;
-
     return $html;
+}
+
+function buildMenu(array $items, int $depth = 2, ?int $parentId = null, int $currentLevel = 1): string
+{
+    $lang       = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ka';
+    $titleField = ($lang === 'en') ? 'title_en' : 'title_geo';
+    return renderLevelByParent($items, $depth, $parentId, $currentLevel, $titleField);
 }

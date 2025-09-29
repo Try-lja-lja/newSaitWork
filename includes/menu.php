@@ -1,21 +1,24 @@
 <?php
-// includes/menu.php — универсальная «обёртка» меню (PHP 5 совместимо)
-
-require_once __DIR__ . '/config.php';
+// includes/menu.php
 require_once __DIR__ . '/menuData.php';
 require_once __DIR__ . '/buildMenu.php';
 
-// дефолты, если не заданы до include
-if (!isset($startLevel)) { $startLevel = 1; }
-if (!isset($depth))      { $depth      = 2; }
+// Параметры
+if (!isset($depth)) {
+    $depth = 2;
+}
+if (!isset($parentId)) {
+    $parentId = null; // от корня
+}
 
-// Определяем: мы на странице словаря или нет
-$currentPath   = $_SERVER['REQUEST_URI'] ?? '';
-$isDictionary  = (strpos($currentPath, '/dictionary-agmarti') !== false);
+// Текущее место (для menu-block--shifted на словаре)
+$currentPath  = $_SERVER['REQUEST_URI'] ?? '';
+$isDictionary = (strpos($currentPath, '/dictionary-agmarti') !== false);
 
+// Каркас + дерево
 echo '<nav class="menu-block' . ($isDictionary ? ' menu-block--shifted' : '') . '" aria-label="Main">' . PHP_EOL;
-echo '  <button class="menu-rail" id="menuRail" aria-label="Toggle side menu" type="button"></button>' . PHP_EOL;
-echo '  <div class="menu-inner">' . PHP_EOL;
-echo        buildMenu($menuItems, (int)$startLevel, (int)$depth);
+echo '  <div class="menu-rail" id="menuRail"></div>' . PHP_EOL;
+echo '  <div class="menu-content">' . PHP_EOL;
+echo buildMenu($menuItems, (int)$depth, $parentId);
 echo '  </div>' . PHP_EOL;
 echo '</nav>' . PHP_EOL;

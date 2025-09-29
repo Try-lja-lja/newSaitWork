@@ -29,6 +29,7 @@ body.offcanvas-open {
 	background: #fff;
 	transition: width 0.28s cubic-bezier(0.2, 0.7, 0.2, 1); /* плавней, без «рывка» */
 	will-change: width;
+	height: auto;
 }
 
 /* ВНУТРЕННИЙ КОНТЕЙНЕР: его сдвигаем за рейл */
