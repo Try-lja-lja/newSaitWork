@@ -60,8 +60,7 @@
 			stage.setAttribute('data-letter-stage', '1');
 			stage.innerHTML = `
         <img class="letter-stage-img" alt="letter large" />
-        <button class="mic-btn" type="button" aria-label="Play letter">
-          <img alt="mic" src="/newSaitWork/assets/img/microphone.png" />
+        <button class="audio-btn" type="button" aria-label="Play letter">
         </button>
       `;
 			app.appendChild(stage);

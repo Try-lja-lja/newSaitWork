@@ -38,5 +38,6 @@ require_once __DIR__ . '/../../includes/header_page.php';
 </div>
 
 <!-- Страничные стили и скрипты -->
+<script src="<?php echo ASSETS_URL; ?>js/main.js" defer></script>
 <link rel="stylesheet" href="<?php echo $ROOT_URL; ?>/pages/resources-adults/assets/css/resources-adults.css">
 <script src="<?php echo $ROOT_URL; ?>/pages/resources-adults/assets/js/resources-adults.js" defer></script>

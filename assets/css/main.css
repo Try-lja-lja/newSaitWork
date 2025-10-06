@@ -551,3 +551,41 @@ footer {
 		order: 2;
 	}
 }
+/* ===== Кнопка прослушивания аудио: стабильная смена иконки при hover ===== */
+/* Базовая кнопка под иконку */
+.audio-btn {
+	position: relative;
+	width: 28px; /* подгони при необходимости под размер твоей иконки */
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: none;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	background-image: url('../img/headphonesBlue.svg'); /* по умолчанию — синие */
+	cursor: pointer;
+	transition: transform 0.25s ease;
+}
+
+/* Смена на красные при наведении + лёгкое увеличение */
+.audio-btn:hover {
+	background-image: url('../img/headphonesRed.svg');
+	transform: scale(1.1);
+}
+
+/* Скрываем вложенный <img>, чтобы не было «двойной» картинки */
+.audio-btn .audio-icon {
+	width: 100%;
+	height: 100%;
+	opacity: 0; /* скрываем, но оставляем в DOM */
+	pointer-events: none;
+}
+
+/* Фокус по клавиатуре — видимая обводка для доступности */
+.audio-btn:focus-visible {
+	outline: 2px solid #4c9aff;
+	outline-offset: 2px;
+}

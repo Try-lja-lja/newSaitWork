@@ -32,6 +32,10 @@ body.offcanvas-open {
 	height: auto;
 }
 
+body:not(.is-home) .menu-block {
+	margin-top: 50px;
+}
+
 /* ВНУТРЕННИЙ КОНТЕЙНЕР: его сдвигаем за рейл */
 .menu-block .menu-inner {
 	position: relative;

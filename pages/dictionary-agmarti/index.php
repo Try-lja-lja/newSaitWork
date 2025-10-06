@@ -105,6 +105,7 @@ require_once __DIR__ . '/connect.php';
   </script>
 
   <!-- Скрипты -->
+  <script src="<?php echo ASSETS_URL; ?>js/main.js" defer></script>
   <script src="<?php echo ASSETS_URL; ?>js/menu.js" defer></script>
   <script src="<?php echo PAGES_URL; ?>dictionary-agmarti/assets/js/dictionary.js"></script>
 </body>
