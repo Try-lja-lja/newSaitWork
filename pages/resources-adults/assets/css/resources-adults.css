@@ -22,6 +22,7 @@
 	background: transparent;
 	cursor: pointer;
 	display: block;
+	perspective: 800px;
 }
 
 .letter-thumb img {
@@ -30,11 +31,16 @@
 	aspect-ratio: 1/1; /* квадратные миниатюры */
 	object-fit: contain;
 	transition: transform 0.6s ease;
+	transform: rotateY(0deg) rotateX(0deg) translateZ(0);
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+	will-change: transform;
 }
 
-/* Ховер-поворот на 360° */
+/* Ховер-поворот */
 .letter-thumb:hover img {
-	transform: rotate(360deg);
+	transform: rotateY(360deg) rotateX(0deg);
 }
 
 /* Главная сцена (большая картинка снизу по центру) */
@@ -88,7 +94,7 @@
 }
 
 /* Доступность: уважать prefers-reduced-motion (не крутить миниатюры) */
-@media (prefers-reduced-motion: reduce) {
+/* @media (prefers-reduced-motion: reduce) {
 	.letter-thumb img {
 		transition: none !important;
 		transform: none !important;
@@ -96,4 +102,4 @@
 	.letter-thumb:hover img {
 		transform: none !important;
 	}
-}
+} */

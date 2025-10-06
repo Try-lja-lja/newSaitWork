@@ -324,6 +324,10 @@ body.offcanvas-open {
 @media (min-width: 769px) {
 	.main-content {
 		display: flex;
+		align-items: flex-start;
+	}
+	.is-home .main-content {
+		align-items: stretch;
 	}
 	.why-block {
 		flex: 1 1 auto;

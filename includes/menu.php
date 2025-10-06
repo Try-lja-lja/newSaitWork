@@ -18,7 +18,7 @@ $isDictionary = (strpos($currentPath, '/dictionary-agmarti') !== false);
 // Каркас + дерево
 echo '<nav class="menu-block' . ($isDictionary ? ' menu-block--shifted' : '') . '" aria-label="Main">' . PHP_EOL;
 echo '  <div class="menu-rail" id="menuRail"></div>' . PHP_EOL;
-echo '  <div class="menu-content">' . PHP_EOL;
+echo '  <div class="menu-inner">' . PHP_EOL;
 echo buildMenu($menuItems, (int)$depth, $parentId);
 echo '  </div>' . PHP_EOL;
 echo '</nav>' . PHP_EOL;
