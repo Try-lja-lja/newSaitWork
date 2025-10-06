@@ -77,7 +77,7 @@
 		return document.querySelector('#lettersApp .letter-stage-img');
 	}
 	function getMicBtn() {
-		return document.querySelector('#lettersApp .mic-btn');
+		return document.querySelector('#lettersApp .audio-btn');
 	}
 
 	function renderGrid() {
