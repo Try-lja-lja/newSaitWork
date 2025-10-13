@@ -1,46 +1,43 @@
 /* pages/resources-adults/assets/css/resources-adults.css */
+/* Базовая раскладка блока с буквами */
 
-/* Контейнер страницы букв */
 .letters-app {
-	display: grid;
-	grid-template-rows: auto 1fr;
-	gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
 }
 
-/* Сетка миниатюр: 3 ряда × 11 колонок (на широких экранах) */
+/* Сетка миниатюр: 3 ряда × 11, "резиновая" ширина */
 .letters-grid {
 	display: grid;
 	grid-template-columns: repeat(11, 1fr);
-	gap: 10px;
+	gap: 16px; /* было 12px — увеличили отступы, миниатюры стали чуть меньше */
 }
 
-/* Кнопки-миниатюры */
 .letter-thumb {
-	appearance: none;
-	border: none;
+	display: block;
 	padding: 0;
+	border: none;
 	background: transparent;
 	cursor: pointer;
-	display: block;
-	perspective: 800px;
+	line-height: 0;
+	-webkit-tap-highlight-color: transparent;
 }
 
 .letter-thumb img {
+	display: block;
 	width: 100%;
 	height: auto;
-	aspect-ratio: 1/1; /* квадратные миниатюры */
-	object-fit: contain;
-	transition: transform 0.6s ease;
-	transform: rotateY(0deg) rotateX(0deg) translateZ(0);
-	transform-style: preserve-3d;
-	backface-visibility: hidden;
-	transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-	will-change: transform;
+	transition: none;
+	transform: none;
+	backface-visibility: visible;
 }
 
-/* Ховер-поворот */
-.letter-thumb:hover img {
-	transform: rotateY(360deg) rotateX(0deg);
+/* Убираем старые эффекты hover/active (повороты/3D не используем) */
+.letter-thumb:hover img,
+.letter-thumb:active img,
+.letter-thumb:focus-visible img {
+	transform: none;
 }
 
 /* Главная сцена (большая картинка снизу по центру) */
@@ -81,25 +78,37 @@
 	filter: invert(1);
 }
 
-/* Адаптив: уменьшаем число колонок на узких экранах */
+/* Адаптив: на узких экранах уменьшаем количество столбцов */
 @media (max-width: 1200px) {
+	.letters-grid {
+		grid-template-columns: repeat(9, 1fr);
+	}
+}
+@media (max-width: 992px) {
 	.letters-grid {
 		grid-template-columns: repeat(8, 1fr);
 	}
 }
-@media (max-width: 900px) {
+@media (max-width: 768px) {
 	.letters-grid {
 		grid-template-columns: repeat(6, 1fr);
 	}
 }
+@media (max-width: 520px) {
+	.letters-grid {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+@media (max-width: 420px) {
+	.letters-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
 
-/* Доступность: уважать prefers-reduced-motion (не крутить миниатюры) */
-/* @media (prefers-reduced-motion: reduce) {
+/* reduce-motion: никаких анимаций — у нас и так их нет для миниатюр */
+@media (prefers-reduced-motion: reduce) {
 	.letter-thumb img {
 		transition: none !important;
 		transform: none !important;
 	}
-	.letter-thumb:hover img {
-		transform: none !important;
-	}
-} */
+}
