@@ -19,11 +19,14 @@
 
 // ЛЁГКАЯ SPA-СВЯЗКА (только для /resources-adults в любом подкаталоге)
 (function () {
-	// Совпадение, если путь содержит /resources-adults (и далее / или конец)
-	const resourcesAdultsRe = /\/resources-adults(\/|$)/;
+	// === УНИВЕРСАЛЬНАЯ SPA-СВЯЗКА ДЛЯ ВНУТРЕННИХ СТРАНИЦ ===
+	// [PATH-BASE] /newSaitWork/pages/
+	// Совпадение для всех внутренних страниц проекта под /newSaitWork/pages/
+	const pagesBaseRe = /^\/newSaitWork\/pages(?:\/|$)/;
 
 	const isSameOrigin = (url) => url.origin === window.location.origin;
-	const shouldHandleSPA = (pathname) => resourcesAdultsRe.test(pathname);
+	// [PATH-BASE] /newSaitWork/pages/
+	const shouldHandleSPA = (pathname) => pagesBaseRe.test(pathname);
 
 	function escapeHtml(s) {
 		return String(s).replace(
@@ -115,15 +118,14 @@
 		});
 	}
 
-	function routeResourcesAdults(pathname) {
-		// Вытащим сегменты после "resources-adults"
-		// Пример: /newSaitWork/pages/resources-adults/textbooks/agmarti
-		const idx = pathname.indexOf('/resources-adults');
-		const tail = idx >= 0 ? pathname.slice(idx) : pathname;
-		const segs = tail.replace(/^\/+|\/+$/g, '').split('/');
-		// segs[0] === 'resources-adults'
-		const level3 = segs[1] || null;
-		const level4 = segs[2] || null;
+	function routePages(pathname) {
+		// Универсальный разбор пути:
+		// /newSaitWork/pages/<section>/<level3>/<level4>
+		// [PATH-BASE] /newSaitWork/pages/
+		const segs = pathname.replace(/^\/+|\/+$/g, '').split('/');
+		// segs[0] = 'newSaitWork', segs[1] = 'pages', segs[2] = <section>, segs[3] = <level3>, segs[4] = <level4>
+		const section = segs[2] || null;
+		const levels = segs.slice(3); // массив всех вложенных уровней после секции
 
 		let title = '';
 		const linkFull = findMenuLinkByPath(pathname);
@@ -139,40 +141,40 @@
 			const base = findMenuLinkByPath(pathname);
 			title = base
 				? (base.textContent || '').trim()
-				: 'მოზარდებისა და ზრდასრულებისთვის';
+				: segmentToTitle(section || '');
 		}
 
 		setPageHeader(title);
 		syncMenuActive(pathname);
 
-		const crumbs = [
-			{ text: 'სასწავლო რესურსები', href: '#' }, // при желании подставим реальный URL раздела
-			{ text: 'მოზარდებისა და ზრდასრულებისთვის', href: '#' },
-		];
-		if (level3) {
-			const t3 =
-				(findMenuLinkBySegment(level3)?.textContent || '').trim() ||
-				segmentToTitle(level3);
-			crumbs.push({ text: t3, href: '#' });
+		// КРОШКИ
+		// Для resources-adults сохраняем текущее поведение (совместимость).
+		// Для остальных секций базовые крошки не добавляем (сделаем правильно на Шаге 2).
+
+		const crumbs = [];
+		if (section) {
+			crumbs.push({ text: section, href: '#' });
 		}
-		if (level4) {
-			const t4 =
-				(findMenuLinkBySegment(level4)?.textContent || '').trim() ||
-				segmentToTitle(level4);
-			crumbs.push({ text: t4, href: '#' });
-		}
+		levels.forEach((seg) => {
+			const title =
+				(findMenuLinkBySegment(seg)?.textContent || '').trim() ||
+				segmentToTitle(seg);
+			crumbs.push({ text: title, href: '#' });
+		});
+
 		renderBreadcrumbs(crumbs);
 
 		document.dispatchEvent(
 			new CustomEvent('route:change', {
-				detail: { section: 'resources-adults', level3, level4, title },
+				// Передаём вычисленную секцию (совместимо: для resources-adults будет 'resources-adults')
+				detail: { section, level3, level4, title },
 			})
 		);
 	}
 
 	function updateUIForPath(pathname) {
 		if (shouldHandleSPA(pathname)) {
-			routeResourcesAdults(pathname);
+			routePages(pathname);
 		}
 	}
 
